@@ -31,11 +31,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  13 .debug_macro  000389f2  00000000  00000000  001d6245  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_line   0003c815  00000000  00000000  0020ec37  2**0
+ 14 .debug_line   0003c820  00000000  00000000  0020ec37  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_str    00108e0a  00000000  00000000  0024b44c  2**0
+ 15 .debug_str    00108e0a  00000000  00000000  0024b457  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_frame  00008548  00000000  00000000  00354258  2**2
+ 16 .debug_frame  00008548  00000000  00000000  00354264  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -171,30 +171,12 @@ void __cxa_guard_release (__guard *g) {*(char *)g = 1;};
 	...
 
 000d40ac <setup>:
-//setup()
-//join I2C bus
-//start Serial communication
-//blink LED to show its sending 
-//initialize UDP communication
-void setup() {
    d40ac:	b538      	push	{r3, r4, r5, lr}
-    // join I2C bus (I2Cdev library doesn't do this automatically)
-    #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
-        Wire.begin();
    d40ae:	f001 fe3f 	bl	d5d30 <_Z19__fetch_global_Wirev>
    d40b2:	f000 fe55 	bl	d4d60 <_ZN7TwoWire5beginEv>
-    #endif
-
-    // initialize serial communication
-    // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
-    // it's really up to you depending on your project)
-    Serial.begin(38400);
    d40b6:	f001 fcb9 	bl	d5a2c <_Z16_fetch_usbserialv>
    d40ba:	f44f 4116 	mov.w	r1, #38400	; 0x9600
    d40be:	f001 fca9 	bl	d5a14 <_ZN9USBSerial5beginEl>
-
-    // initialize device
-    Serial.println("Initializing I2C devices...");
    d40c2:	f001 fcb3 	bl	d5a2c <_Z16_fetch_usbserialv>
    d40c6:	4920      	ldr	r1, [pc, #128]	; (d4148 <setup+0x9c>)
     bool connecting(void) {
@@ -205,16 +187,11 @@ void setup() {
         return network_ready(*this, 0, NULL);
    d40c8:	4d20      	ldr	r5, [pc, #128]	; (d414c <setup+0xa0>)
    d40ca:	f001 f80e 	bl	d50ea <_ZN5Print7printlnEPKc>
-    accelgyro.initialize();
    d40ce:	4820      	ldr	r0, [pc, #128]	; (d4150 <setup+0xa4>)
    d40d0:	f000 fa5b 	bl	d458a <_ZN7MPU605010initializeEv>
-
-    // verify connection
-    Serial.println("Testing device connections...");
    d40d4:	f001 fcaa 	bl	d5a2c <_Z16_fetch_usbserialv>
    d40d8:	491e      	ldr	r1, [pc, #120]	; (d4154 <setup+0xa8>)
    d40da:	f001 f806 	bl	d50ea <_ZN5Print7printlnEPKc>
-    Serial.println(accelgyro.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
    d40de:	f001 fca5 	bl	d5a2c <_Z16_fetch_usbserialv>
    d40e2:	4604      	mov	r4, r0
    d40e4:	481a      	ldr	r0, [pc, #104]	; (d4150 <setup+0xa4>)
@@ -226,50 +203,30 @@ void setup() {
    d40f2:	4611      	movne	r1, r2
    d40f4:	4620      	mov	r0, r4
    d40f6:	f000 fff8 	bl	d50ea <_ZN5Print7printlnEPKc>
-
-    // configure Arduino LED for
-    pinMode(LED_PIN, OUTPUT);
    d40fa:	2101      	movs	r1, #1
    d40fc:	2007      	movs	r0, #7
    d40fe:	f001 fdd3 	bl	d5ca8 <pinMode>
-
-     // Serial.begin(115200);
-    udp.begin(0);//necessary even for sending only.
    d4102:	2200      	movs	r2, #0
    d4104:	4816      	ldr	r0, [pc, #88]	; (d4160 <setup+0xb4>)
-    while (!WiFi.ready())
-    {
-        delay(500);
-        Serial.print(".");
    d4106:	4c17      	ldr	r4, [pc, #92]	; (d4164 <setup+0xb8>)
-    udp.begin(0);//necessary even for sending only.
    d4108:	4611      	mov	r1, r2
    d410a:	f001 f923 	bl	d5354 <_ZN3UDP5beginEtm>
    d410e:	2200      	movs	r2, #0
    d4110:	6868      	ldr	r0, [r5, #4]
    d4112:	4611      	mov	r1, r2
    d4114:	f000 fd34 	bl	d4b80 <network_ready>
-    while (!WiFi.ready())
    d4118:	b948      	cbnz	r0, d412e <setup+0x82>
-        delay(500);
    d411a:	f44f 70fa 	mov.w	r0, #500	; 0x1f4
    d411e:	f000 fd97 	bl	d4c50 <delay>
-        Serial.print(".");
    d4122:	f001 fc83 	bl	d5a2c <_Z16_fetch_usbserialv>
    d4126:	4621      	mov	r1, r4
    d4128:	f000 ffcc 	bl	d50c4 <_ZN5Print5printEPKc>
-    while (!WiFi.ready())
    d412c:	e7ef      	b.n	d410e <setup+0x62>
-    }
-    Serial.println("");
    d412e:	f001 fc7d 	bl	d5a2c <_Z16_fetch_usbserialv>
    d4132:	490d      	ldr	r1, [pc, #52]	; (d4168 <setup+0xbc>)
    d4134:	f000 ffd9 	bl	d50ea <_ZN5Print7printlnEPKc>
-    Serial.println("WiFi connected");
    d4138:	f001 fc78 	bl	d5a2c <_Z16_fetch_usbserialv>
-}
    d413c:	e8bd 4038 	ldmia.w	sp!, {r3, r4, r5, lr}
-    Serial.println("WiFi connected");
    d4140:	490a      	ldr	r1, [pc, #40]	; (d416c <setup+0xc0>)
    d4142:	f000 bfd2 	b.w	d50ea <_ZN5Print7printlnEPKc>
    d4146:	bf00      	nop
@@ -285,16 +242,8 @@ void setup() {
    d416c:	000d67fe 	.word	0x000d67fe
 
 000d4170 <loop>:
-//
-//read acceleration from the sensor 
-//send accel values via OSC
-//blink LED to show its sending 
-//
-void loop() {
    d4170:	b5f0      	push	{r4, r5, r6, r7, lr}
    d4172:	b0a1      	sub	sp, #132	; 0x84
-    // read raw accel/gyro measurements from device
-    accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
    d4174:	4b30      	ldr	r3, [pc, #192]	; (d4238 <loop+0xc8>)
    d4176:	4f31      	ldr	r7, [pc, #196]	; (d423c <loop+0xcc>)
    d4178:	4c31      	ldr	r4, [pc, #196]	; (d4240 <loop+0xd0>)
@@ -308,70 +257,43 @@ void loop() {
    d4188:	463b      	mov	r3, r7
    d418a:	4629      	mov	r1, r5
    d418c:	4830      	ldr	r0, [pc, #192]	; (d4250 <loop+0xe0>)
-    
-    //divide by 16384 according to datasheet of sensor (see https://howtomechatronics.com/tutorials/arduino/arduino-and-mpu6050-accelerometer-and-gyroscope-tutorial/)
-    AccX = ax/ 16384.0;
    d418e:	4e31      	ldr	r6, [pc, #196]	; (d4254 <loop+0xe4>)
-    accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
    d4190:	f000 f9b6 	bl	d4500 <_ZN7MPU605010getMotion6EPsS0_S0_S0_S0_S0_>
-    AccX = ax/ 16384.0;
    d4194:	f9b5 0000 	ldrsh.w	r0, [r5]
-    AccY = ay/ 16384.0;
    d4198:	4d2f      	ldr	r5, [pc, #188]	; (d4258 <loop+0xe8>)
-    AccX = ax/ 16384.0;
    d419a:	f001 ff43 	bl	d6024 <__aeabi_i2d>
    d419e:	4b2f      	ldr	r3, [pc, #188]	; (d425c <loop+0xec>)
    d41a0:	2200      	movs	r2, #0
    d41a2:	f001 ffa9 	bl	d60f8 <__aeabi_dmul>
    d41a6:	f002 f9e1 	bl	d656c <__aeabi_d2f>
    d41aa:	6030      	str	r0, [r6, #0]
-    AccY = ay/ 16384.0;
    d41ac:	f9b4 0000 	ldrsh.w	r0, [r4]
-    AccZ= az/16384.0;
    d41b0:	4c2b      	ldr	r4, [pc, #172]	; (d4260 <loop+0xf0>)
-    AccY = ay/ 16384.0;
    d41b2:	f001 ff37 	bl	d6024 <__aeabi_i2d>
    d41b6:	4b29      	ldr	r3, [pc, #164]	; (d425c <loop+0xec>)
    d41b8:	2200      	movs	r2, #0
    d41ba:	f001 ff9d 	bl	d60f8 <__aeabi_dmul>
    d41be:	f002 f9d5 	bl	d656c <__aeabi_d2f>
    d41c2:	6028      	str	r0, [r5, #0]
-    AccZ= az/16384.0;
    d41c4:	f9b7 0000 	ldrsh.w	r0, [r7]
    d41c8:	f001 ff2c 	bl	d6024 <__aeabi_i2d>
    d41cc:	2200      	movs	r2, #0
    d41ce:	4b23      	ldr	r3, [pc, #140]	; (d425c <loop+0xec>)
    d41d0:	f001 ff92 	bl	d60f8 <__aeabi_dmul>
    d41d4:	f002 f9ca 	bl	d656c <__aeabi_d2f>
-    // GyroX = gx/ 131.0;
-    // GyroY = gy/ 131.0;
-    // GyroZ= gz/ 131.0;;
-
-    // blink LED to indicate activity
-    blinkState = !blinkState;
    d41d8:	4b22      	ldr	r3, [pc, #136]	; (d4264 <loop+0xf4>)
-    AccZ= az/16384.0;
    d41da:	6020      	str	r0, [r4, #0]
-    blinkState = !blinkState;
    d41dc:	7819      	ldrb	r1, [r3, #0]
-    digitalWrite(LED_PIN, blinkState);
    d41de:	2007      	movs	r0, #7
-    blinkState = !blinkState;
    d41e0:	f081 0101 	eor.w	r1, r1, #1
    d41e4:	7019      	strb	r1, [r3, #0]
-    digitalWrite(LED_PIN, blinkState);
    d41e6:	f001 fd70 	bl	d5cca <digitalWrite>
-    
-    //SEND OSC (to Max) 
-    OSCMessage outMessage("/sarah");
    d41ea:	491f      	ldr	r1, [pc, #124]	; (d4268 <loop+0xf8>)
    d41ec:	a80b      	add	r0, sp, #44	; 0x2c
    d41ee:	f000 fa03 	bl	d45f8 <_ZN10OSCMessageC1EPKc>
-    outMessage.addFloat(AccX);
    d41f2:	ed96 0a00 	vldr	s0, [r6]
    d41f6:	a80b      	add	r0, sp, #44	; 0x2c
    d41f8:	f000 fa3d 	bl	d4676 <_ZN10OSCMessage8addFloatEf>
-    outMessage.addFloat(AccY);
    d41fc:	ed95 0a00 	vldr	s0, [r5]
 
 /**
@@ -382,7 +304,6 @@ class IPAddress : public Printable {
    d4200:	4d1a      	ldr	r5, [pc, #104]	; (d426c <loop+0xfc>)
    d4202:	a80b      	add	r0, sp, #44	; 0x2c
    d4204:	f000 fa37 	bl	d4676 <_ZN10OSCMessage8addFloatEf>
-    outMessage.addFloat(AccZ);
    d4208:	ed94 0a00 	vldr	s0, [r4]
    d420c:	a80b      	add	r0, sp, #44	; 0x2c
    d420e:	f000 fa32 	bl	d4676 <_ZN10OSCMessage8addFloatEf>
@@ -393,17 +314,14 @@ class IPAddress : public Printable {
    d421a:	c40f      	stmia	r4!, {r0, r1, r2, r3}
    d421c:	682b      	ldr	r3, [r5, #0]
    d421e:	7023      	strb	r3, [r4, #0]
-    outMessage.send(udp,outIp,outPort);
    d4220:	4b14      	ldr	r3, [pc, #80]	; (d4274 <loop+0x104>)
    d4222:	4915      	ldr	r1, [pc, #84]	; (d4278 <loop+0x108>)
    d4224:	681b      	ldr	r3, [r3, #0]
    d4226:	aa05      	add	r2, sp, #20
    d4228:	a80b      	add	r0, sp, #44	; 0x2c
    d422a:	f000 fa4f 	bl	d46cc <_ZN10OSCMessage4sendER3UDP9IPAddressj>
-    OSCMessage outMessage("/sarah");
    d422e:	a80b      	add	r0, sp, #44	; 0x2c
    d4230:	f000 fa04 	bl	d463c <_ZN10OSCMessageD1Ev>
-};
    d4234:	b021      	add	sp, #132	; 0x84
    d4236:	bdf0      	pop	{r4, r5, r6, r7, pc}
    d4238:	2003e540 	.word	0x2003e540
@@ -426,7 +344,6 @@ class IPAddress : public Printable {
 
 000d427c <_GLOBAL__sub_I_SystemMode>:
    d427c:	b507      	push	{r0, r1, r2, lr}
-SYSTEM_THREAD(ENABLED);
    d427e:	2100      	movs	r1, #0
    d4280:	2001      	movs	r0, #1
    d4282:	f000 fc41 	bl	d4b08 <system_thread_set_state>
@@ -452,10 +369,8 @@ public:
         set_system_mode(mode);
    d4296:	2001      	movs	r0, #1
    d4298:	f000 fc26 	bl	d4ae8 <set_system_mode>
-UDP udp;
    d429c:	4809      	ldr	r0, [pc, #36]	; (d42c4 <_GLOBAL__sub_I_SystemMode+0x48>)
    d429e:	f001 fa4b 	bl	d5738 <_ZN3UDPC1Ev>
-IPAddress outIp(192, 168, 1, 106); //your computer IP//Need to reconfigure for each new wifi network ! 
    d42a2:	236a      	movs	r3, #106	; 0x6a
    d42a4:	9300      	str	r3, [sp, #0]
    d42a6:	22a8      	movs	r2, #168	; 0xa8
@@ -463,12 +378,9 @@ IPAddress outIp(192, 168, 1, 106); //your computer IP//Need to reconfigure for e
    d42aa:	21c0      	movs	r1, #192	; 0xc0
    d42ac:	4806      	ldr	r0, [pc, #24]	; (d42c8 <_GLOBAL__sub_I_SystemMode+0x4c>)
    d42ae:	f000 fe13 	bl	d4ed8 <_ZN9IPAddressC1Ehhhh>
-MPU6050 accelgyro;
    d42b2:	4806      	ldr	r0, [pc, #24]	; (d42cc <_GLOBAL__sub_I_SystemMode+0x50>)
-};
    d42b4:	b003      	add	sp, #12
    d42b6:	f85d eb04 	ldr.w	lr, [sp], #4
-MPU6050 accelgyro;
    d42ba:	f000 b907 	b.w	d44cc <_ZN7MPU6050C1Ev>
    d42be:	bf00      	nop
    d42c0:	2003e518 	.word	0x2003e518
