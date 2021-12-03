@@ -22,7 +22,9 @@ SYSTEM_MODE(AUTOMATIC); //Automatic for automatic connection to wifi
 
 //setting up udp for communication with Max
 UDP udp;
-IPAddress outIp(192, 168, 1, 106); //your computer IP//Need to reconfigure for each new wifi network ! 
+//IPAddress outIp(192, 168, 1, 106); //your computer IP//Need to reconfigure for each new wifi network ! 
+//IPAddress outIp(192, 168, 2, 124); //milo's studio
+IPAddress outIp(172, 20, 10, 7); //maximephonetest
 unsigned int outPort = 2233; //computer port -- use this in Max 
 
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation

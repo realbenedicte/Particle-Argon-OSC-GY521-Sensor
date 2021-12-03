@@ -19,21 +19,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   7 .module_info_crc 00000004  000d6ac0  000d6ac0  00026ac0  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  8 .debug_info   0015eb6c  00000000  00000000  00026ac4  2**0
+  8 .debug_info   0015eb6a  00000000  00000000  00026ac4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_abbrev 00016d5b  00000000  00000000  00185630  2**0
+  9 .debug_abbrev 00016d5b  00000000  00000000  0018562e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    0002f502  00000000  00000000  0019c38b  2**0
+ 10 .debug_loc    0002f502  00000000  00000000  0019c389  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_aranges 00003070  00000000  00000000  001cb88d  2**0
+ 11 .debug_aranges 00003070  00000000  00000000  001cb88b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00007948  00000000  00000000  001ce8fd  2**0
+ 12 .debug_ranges 00007948  00000000  00000000  001ce8fb  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_macro  000389f2  00000000  00000000  001d6245  2**0
+ 13 .debug_macro  000389f2  00000000  00000000  001d6243  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_line   0003c81e  00000000  00000000  0020ec37  2**0
+ 14 .debug_line   0003c81e  00000000  00000000  0020ec35  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_str    00108e0f  00000000  00000000  0024b455  2**0
+ 15 .debug_str    00108e0f  00000000  00000000  0024b453  2**0
                   CONTENTS, READONLY, DEBUGGING
  16 .debug_frame  00008548  00000000  00000000  00354264  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -455,12 +455,12 @@ public:
 UDP udp;
    d429c:	4809      	ldr	r0, [pc, #36]	; (d42c4 <_GLOBAL__sub_I_SystemMode+0x48>)
    d429e:	f001 fa4b 	bl	d5738 <_ZN3UDPC1Ev>
-IPAddress outIp(192, 168, 1, 106); //your computer IP//Need to reconfigure for each new wifi network ! 
-   d42a2:	236a      	movs	r3, #106	; 0x6a
+IPAddress outIp(172, 20, 10, 7); //maximephonetest
+   d42a2:	2307      	movs	r3, #7
    d42a4:	9300      	str	r3, [sp, #0]
-   d42a6:	22a8      	movs	r2, #168	; 0xa8
-   d42a8:	2301      	movs	r3, #1
-   d42aa:	21c0      	movs	r1, #192	; 0xc0
+   d42a6:	2214      	movs	r2, #20
+   d42a8:	230a      	movs	r3, #10
+   d42aa:	21ac      	movs	r1, #172	; 0xac
    d42ac:	4806      	ldr	r0, [pc, #24]	; (d42c8 <_GLOBAL__sub_I_SystemMode+0x4c>)
    d42ae:	f000 fe13 	bl	d4ed8 <_ZN9IPAddressC1Ehhhh>
 MPU6050 accelgyro;
